@@ -1,0 +1,237 @@
+{
+  "Education & Study Materials": {
+    "Software & Engineering Study Materials": {
+      "Frontend & Web Development Study Guides": [
+        "ReactJS Study Material & Cheat Sheet",
+        "React Interview Preparation & Core Concepts",
+        "JavaScript & TypeScript Study Guide",
+        "HTML, CSS & Responsive Design Study Notes",
+        "Angular & Vue.js Study Material",
+        "Full-Stack Web Development Course Notes"
+      ],
+      "Backend, Programming & CS Study Guides": [
+        "Python Programming Study Material & Notes",
+        "Java & Spring Framework Study Guide",
+        "C, C++ & C# Programming Study Material",
+        "Data Structures & Algorithms (DSA) Study Guide",
+        "Database Management Systems (DBMS & SQL) Study Notes",
+        "Operating Systems & Computer Networks Study Material",
+        "System Design & Software Architecture Study Guide"
+      ]
+    },
+    "AI, Cloud & Certification Study Guides": {
+      "AI & LLM Certification Study Guides": [
+        "Claude Certified Developer Study Guide (CCDV-F)",
+        "Generative AI & LLM Foundations Study Material",
+        "AI Agents, Prompt Engineering & MCP Study Guide",
+        "Machine Learning & Deep Learning Lecture Notes",
+        "Data Science & Analytics Study Material"
+      ],
+      "Cloud, DevOps & Security Study Guides": [
+        "AWS Cloud Certification Study Guide",
+        "Azure & GCP Certification Study Material",
+        "DevOps, Docker & Kubernetes Study Notes",
+        "Cybersecurity & Ethical Hacking Study Guide"
+      ]
+    },
+    "Academic, Placement & Interview Preparation": {
+      "Technical Interview & Placement Prep": [
+        "Technical Interview Mastery & Q&A Guide",
+        "Coding Interview & Problem-Solving Handbook",
+        "Campus Placement & Aptitude Study Material",
+        "Practice Exam & Assessment Question Bank"
+      ],
+      "Academic Coursework & Textbooks": [
+        "University Lecture Notes & Course Handouts",
+        "Reference Textbook & Comprehensive Manual",
+        "Quick Revision Cheat Sheet & Concept Summary",
+        "Research Paper & Literature Study Guide"
+      ]
+    }
+  },
+  "Insurance": {
+    "Motor Insurance": {
+      "Claims": {
+        "FNOL": ["Customer Notification", "Accident Report", "Initial Assessment"],
+        "Claim Processing": ["Document Collection", "Assessment", "Approval", "Settlement"],
+        "Claim Investigation": ["Fraud Detection", "Site Inspection", "Third Party Liaison"]
+      },
+      "Policy": {
+        "New Business": ["Quote", "Application", "Underwriting", "Policy Issuance"],
+        "Renewals": ["Renewal Notice", "Premium Calculation", "Policy Update"],
+        "Endorsements": ["Coverage Change", "Vehicle Change", "Driver Change"]
+      }
+    },
+    "Life Insurance": {
+      "Claims": {
+        "Death Claim": ["Notification", "Document Verification", "Settlement"],
+        "Maturity Claim": ["Maturity Notice", "Settlement"]
+      },
+      "Policy": {
+        "New Business": ["Application", "Medical Underwriting", "Policy Issuance"],
+        "Renewals": ["Premium Notice", "Lapse Recovery"]
+      }
+    },
+    "Health Insurance": {
+      "Claims": {
+        "Cashless": ["Pre-authorization", "Hospital Liaison", "Discharge"],
+        "Reimbursement": ["Claim Form", "Document Review", "Settlement"]
+      },
+      "Policy": {
+        "Group Health": ["Enrollment", "Premium", "Benefits"],
+        "Individual Health": ["Application", "Underwriting", "Issuance"]
+      }
+    }
+  },
+  "Banking": {
+    "Retail Banking": {
+      "Accounts": ["Account Opening", "KYC & Identity Documents", "Bank Statements & Passbooks", "Account Maintenance", "Account Closure"],
+      "Payments & Negotiable Instruments": {
+        "Cheques & Drafts": ["Bank Cheque", "Cancelled Cheque", "Demand Draft & Pay Order", "Cheque Clearing & Settlement"],
+        "Electronic Transfers": ["NEFT / RTGS / IMPS", "UPI Transactions", "Standing Instructions & ECS"]
+      },
+      "Loans": {
+        "Home Loan": ["Application", "Valuation", "Approval", "Disbursement", "Repayment"],
+        "Personal Loan": ["Application", "Credit Check", "Approval", "Disbursement"],
+        "Auto Loan": ["Application", "Vehicle Valuation", "Approval", "Disbursement"]
+      },
+      "Cards": ["Credit Card", "Debit Card", "Prepaid Card"]
+    },
+    "Corporate Banking": {
+      "Trade Finance": ["Letter of Credit", "Bank Guarantee", "Export Finance"],
+      "Treasury": ["Foreign Exchange", "Derivatives", "Cash Management"]
+    }
+  },
+  "Human Resources": {
+    "Recruitment": {
+      "Selection": ["Candidate Resumes & CVs", "Resume Screening", "Interview & Evaluation", "Assessment", "Offer"],
+      "Onboarding": ["Induction", "Documentation", "Academic & Identity Verification", "Employee ID & Profile Media", "System Access", "Orientation"],
+      "Job Posting": ["Job Description", "Approval", "Publication"]
+    },
+    "Employee Relations": {
+      "Policies": ["Leave Policy", "Code of Conduct", "Grievance Policy", "Disciplinary Policy"],
+      "Performance": ["Goal Setting", "Appraisal", "Feedback", "PIP"],
+      "Exit": ["Resignation", "Clearance", "Final Settlement", "Exit Interview"]
+    },
+    "Learning & Development": {
+      "Training": ["Induction Training", "Technical Training", "Soft Skills", "Compliance Training"],
+      "Certification": ["Academic Marksheets & Certificates", "Educational Degrees & Diplomas", "Exam Admit Cards & Assessments", "Internal Certification", "External Certification"]
+    },
+    "Payroll": {
+      "Salary Processing": ["Monthly Payroll", "Bonus", "Increments"],
+      "Statutory Compliance": ["PF", "ESI", "TDS", "Professional Tax"]
+    }
+  },
+  "Legal & Government Documents": {
+    "Notarized & Sworn Documents": {
+      "Affidavits & Declarations": ["Birth Affidavit", "Name Change & Identity Affidavit", "Address & Domicile Affidavit", "Income & Financial Affidavit", "Sworn Legal Declaration"],
+      "Contracts & Agreements": ["Non-Disclosure Agreement (NDA)", "Service Level Agreement (SLA)", "Employment Agreement", "Lease & Property Agreement", "Memorandum of Understanding (MoU)"]
+    },
+    "Civil & Government Identity": {
+      "National Identity & KYC": ["Aadhaar Card (UIDAI)", "PAN Card (Income Tax)", "Passport", "Voter ID", "Driving License"],
+      "Civil Registration & Certificates": ["Birth Certificate", "Marriage Certificate", "Domicile & Nativity Certificate", "Community & Caste Certificate", "Bonafide Certificate"]
+    }
+  },
+  "Finance & Accounting": {
+    "Billing & Commercial": {
+      "Invoices & Receipts": ["Tax Invoice", "Payment Receipt", "Purchase Order", "Quotation & Estimate", "Expense Claim"]
+    },
+    "Taxation & Financial Reporting": {
+      "Tax Filings": ["Income Tax Return (ITR)", "GST Return & Invoice", "TDS Certificate (Form 16)"],
+      "Financial Statements": ["Balance Sheet", "Profit & Loss Statement", "Audit Report"]
+    }
+  },
+  "Technology": {
+    "Artificial Intelligence & Machine Learning": {
+      "Intelligent Systems & Agents": {
+        "Autonomous & Multi-Agent Systems": ["Agent Orchestration", "Goal-Driven Planning", "Tool Integration & Function Calling", "Multi-Agent Coordination"],
+        "Conversational AI": ["Virtual Assistants", "Dialogue Management", "Intent Recognition", "Chatbot Interfaces"]
+      },
+      "Generative AI & LLMs": {
+        "Prompt Engineering": ["System Prompting", "Few-Shot Techniques", "Chain-of-Thought"],
+        "Retrieval-Augmented Generation": ["Document Grounding & Retrieval", "Vector Embeddings & Search", "Knowledge Base Integration"],
+        "Foundation Models": ["Model Evaluation", "Fine-Tuning & Adaptation", "Guardrails & Safety", "Inference Serving"]
+      },
+      "Machine Learning Operations": {
+        "Data Engineering for AI": ["Data Ingestion & Pipelines", "Feature Engineering", "Data Labeling & Annotation"],
+        "Model Lifecycle": ["Model Training", "Model Validation", "Model Monitoring & Drift Detection"]
+      }
+    },
+    "Cloud Architecture": {
+      "AWS": {
+        "Compute": ["Lambda", "EC2", "ECS", "EKS"],
+        "Storage": ["S3", "EBS", "EFS", "Glacier"],
+        "Database": ["RDS", "DynamoDB", "Aurora", "Redshift"],
+        "Networking": ["VPC", "API Gateway", "CloudFront", "Route53"],
+        "AI & ML": ["Bedrock", "SageMaker", "Rekognition", "Textract"]
+      },
+      "Azure": {
+        "Compute": ["Virtual Machines", "Azure Functions", "App Services"],
+        "Storage": ["Blob Storage", "File Storage", "Data Lake"],
+        "Database": ["Cosmos DB", "Azure SQL Database", "Synapse Analytics"],
+        "Networking": ["Virtual Network", "Load Balancer", "Application Gateway"]
+      },
+      "GCP": {
+        "Compute": ["Compute Engine", "Cloud Functions", "Google Kubernetes Engine"],
+        "Storage": ["Cloud Storage", "Persistent Disk"],
+        "Database": ["BigQuery", "Firestore", "Cloud Spanner"],
+        "Networking": ["Virtual Private Cloud", "Cloud Load Balancing", "Cloud CDN"]
+      }
+    },
+    "Software Development": {
+      "Backend & API Development": {
+        "Python": ["Lambda Functions", "Scripts & Automation", "FastAPI & Flask", "AsyncIO & Data Processing"],
+        "Node.js & JavaScript": ["Express & NestJS", "Serverless Functions", "Async Event Loop", "REST APIs"],
+        "Java & Spring": ["Spring Boot", "Enterprise Services", "JPA & Hibernate", "JVM Runtimes"],
+        "Go (Golang)": ["Goroutines & Concurrency", "gRPC Services", "Microservices", "CLI Tools"],
+        "C# & .NET": ["ASP.NET Core", "Entity Framework", "Web APIs", "Enterprise Services"],
+        "REST & GraphQL APIs": ["API Endpoints", "Schema Design", "Authentication & Middleware", "API Gateways"]
+      },
+      "Frontend & UI Development": {
+        "HTML & CSS": ["Semantic HTML", "Responsive Layouts & CSS Grid", "Stylesheets & Themes", "UI Prototypes"],
+        "JavaScript & TypeScript": ["DOM Manipulation", "ES Modules", "Client-Side Scripting", "State Management"],
+        "React & Next.js": ["React Components & JSXSource", "Server-Side Rendering", "Hooks & State Management", "Single Page Applications"],
+        "Angular & Vue": ["Component Architecture", "Directives & Binding", "Templates & Routing"]
+      },
+      "Architecture": {
+        "Patterns": ["Microservices", "Event-Driven Architecture", "Serverless", "Monolithic Architecture"],
+        "Integration": ["API Gateway", "Message Queuing", "Enterprise Service Bus", "Event Streaming"],
+        "Data & Metadata": ["Metadata & JSON Schemas", "Taxonomy & Classification Metadata", "Data Modeling", "Schema Registry"]
+      },
+      "Quality Engineering & Testing": {
+        "Accessibility & Compliance": ["WCAG Standards", "Screen Reader Compatibility", "Visual Contrast & Styling", "Keyboard Navigation"],
+        "Functional Testing": ["Unit Testing", "Integration Testing", "End-to-End Testing", "Regression Testing"],
+        "Performance Testing": ["Load Testing", "Stress Testing", "Latency Benchmarking"]
+      },
+      "DevOps & Infrastructure": {
+        "CI/CD Pipelines": ["Continuous Integration", "Continuous Deployment", "Release Management", "Build Automation"],
+        "Containerization & Orchestration": ["Docker & Containers", "Kubernetes & Clusters"],
+        "Infrastructure as Code": ["Terraform", "CloudFormation", "Configuration Management"]
+      }
+    },
+    "Cybersecurity": {
+      "Security Governance": {
+        "Policies & Compliance": ["Information Security Policy", "Data Privacy & GDPR", "Regulatory Compliance"],
+        "Risk Assessment": ["Vulnerability Assessment", "Threat Modeling", "Security Audit"]
+      },
+      "Security Operations": {
+        "Identity & Access Management": ["Authentication", "Authorization & RBAC", "Single Sign-On", "MFA"],
+        "Threat Defense": ["Incident Response", "SOC Operations", "Threat Intelligence", "Encryption & Key Management"]
+      }
+    }
+  },
+  "Customer Service": {
+    "Complaint Management": ["Complaint Registration", "Investigation", "Resolution", "Escalation"],
+    "Query Handling": ["Product Query", "Service Query", "Technical Query"],
+    "Feedback": ["Customer Satisfaction", "NPS", "Service Review"]
+  },
+  "Operations": {
+    "Process Management": ["SOP", "Process Design", "Process Improvement", "BPM"],
+    "Quality": ["Quality Assurance", "Audit", "Compliance", "Six Sigma"],
+    "Vendor Management": ["Vendor Selection", "Contract", "Performance Review", "Payment"],
+    "Travel & Passenger Ticketing": {
+      "Bus & Coach Ticketing": ["Passenger Bus Ticket & Booking Confirmation", "Bus Itinerary & Boarding Pass"],
+      "Rail & Air Ticketing": ["Train Ticket & PNR Confirmation", "Flight Ticket & Boarding Pass", "Hotel & Travel Voucher"]
+    }
+  }
+}
