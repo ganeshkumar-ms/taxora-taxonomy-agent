@@ -14,7 +14,7 @@
 - **IAM Role**: `taxora-backend-lambda-role` (Least-privilege S3, Bedrock, Textract, CloudWatch access)
 - **AWS Region**: `us-east-1` (N. Virginia)
 - **Active User / Identity**: `arn:aws:iam::984625844016:user/ai-admin`
-- **Automated Deployment Script**: [`c:/Users/ELCOT/OneDrive/Desktop/Agent/taxora/deploy_aws.py`](file:///c:/Users/ELCOT/OneDrive/Desktop/Agent/taxora/deploy_aws.py)
+- **Automated Deployment Script**: [`c:/Users/ELCOT/OneDrive/Desktop/Agent/taxora-taxonomy-agent/deploy_aws.py`](file:///c:/Users/ELCOT/OneDrive/Desktop/Agent/taxora-taxonomy-agent/deploy_aws.py)
 
 ---
 
@@ -41,7 +41,7 @@
 
 ## 3. Enterprise BFSI Guardrails & Fraud Detection (TCS BFSI Standard)
 
-Implemented in [`taxora/backend/services/guardrail_service.py`](file:///c:/Users/ELCOT/OneDrive/Desktop/Agent/taxora/backend/services/guardrail_service.py):
+Implemented in [`taxora-taxonomy-agent/backend/services/guardrail_service.py`](file:///c:/Users/ELCOT/OneDrive/Desktop/Agent/taxora-taxonomy-agent/backend/services/guardrail_service.py):
 
 ### A. Statement Anomaly & Tampering Detection (`BLOCKED_FRAUD_ANOMALY`)
 - **Arithmetic Reconciliation Check**:

@@ -2,6 +2,7 @@ import base64
 import json
 import os
 import re
+import tempfile
 import uuid
 from email.parser import BytesParser
 from email.policy import default as default_email_policy
@@ -13,7 +14,7 @@ from botocore.config import Config
 from services import bedrock_service, document_service, file_validation, viewer_service
 from services.taxonomy_service import load_taxonomy
 
-TMP_UPLOADS = Path('/tmp/uploads')
+TMP_UPLOADS = Path(tempfile.gettempdir()) / 'uploads'
 TMP_UPLOADS.mkdir(parents=True, exist_ok=True)
 S3_BUCKET = os.environ.get('TAXORA_S3_BUCKET', 'taxora-ui-984625844016')
 REGION = os.environ.get('AWS_REGION', 'us-east-1')
