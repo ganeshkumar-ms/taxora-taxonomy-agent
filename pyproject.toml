@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "taxora-agent"
+version = "1.0.0"
+description = "Installable Python SDK and CLI for TAXORA Enterprise Document Taxonomy Agent"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [
+  { name = "Ganeshkumar M", email = "ganesh71730@gmail.com" }
+]
+keywords = ["taxonomy", "classification", "ai-agent", "taxora", "enterprise"]
+dependencies = []
+
+[project.optional-dependencies]
+server = [
+  "fastapi",
+  "uvicorn[standard]",
+  "boto3",
+  "python-multipart",
+  "pdfplumber",
+  "python-docx",
+  "pandas",
+  "openpyxl",
+  "python-dotenv",
+  "pydantic",
+]
+
+[project.urls]
+Homepage = "https://duwz8hk1atmbr.cloudfront.net"
+Repository = "https://github.com/ganeshkumar-ms/taxora-taxonomy-agent"
+
+[project.scripts]
+taxora = "taxora.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["taxora*"]

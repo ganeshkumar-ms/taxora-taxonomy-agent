@@ -11,6 +11,10 @@
 **/__pycache__/
 *.py[cod]
 *.egg-info/
+build/
+dist/
+*.whl
+*.tar.gz
 
 # Node / Vite
 **/node_modules/
