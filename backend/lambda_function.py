@@ -10,7 +10,7 @@ from urllib.parse import unquote, quote
 
 import boto3
 from botocore.config import Config
-from services import bedrock_service, document_service, viewer_service
+from services import bedrock_service, document_service, file_validation, viewer_service
 from services.taxonomy_service import load_taxonomy
 
 TMP_UPLOADS = Path('/tmp/uploads')
@@ -272,6 +272,15 @@ def lambda_handler(event, context):
             file_bytes = file_obj['bytes']
             orig_filename = file_obj['filename']
             total_sz = actual_total_size if actual_total_size is not None else len(file_bytes)
+            pre_rej = file_validation.validate_file_pre_extract(orig_filename, file_bytes, total_size_override=total_sz)
+            if pre_rej:
+                return _json_response(200, {
+                    'type': 'chat',
+                    'message': pre_rej['message'],
+                    'rejected': True,
+                    'rejection_details': pre_rej,
+                    'document_metadata': {'filename': orig_filename, 'size_bytes': total_sz},
+                })
             stored_name = pre_stored_name or f"{uuid.uuid4().hex[:8]}_{_sanitize_filename(orig_filename)}"
             try:
                 if total_sz <= 8_000_000:
@@ -289,10 +298,14 @@ def lambda_handler(event, context):
             doc_meta['view_url'] = f'/api/document/{q}/view'
 
             user_text = (text or '').strip()
-            if doc_meta.get('is_empty', False) or total_sz == 0:
+            post_rej = file_validation.validate_file_post_extract(orig_filename, file_bytes, extracted.get('text', ''), meta=doc_meta)
+            if post_rej or doc_meta.get('is_empty', False) or total_sz == 0:
+                msg = post_rej['message'] if post_rej else f"File Not Accepted — Empty File: '{orig_filename}' contains 0 readable bytes."
                 return _json_response(200, {
                     'type': 'chat',
-                    'message': f"The uploaded file '{orig_filename}' is empty (0 bytes) and contains no content to classify. Please upload a file containing text, code, or documentation.",
+                    'message': msg,
+                    'rejected': True,
+                    'rejection_details': post_rej,
                     'document_metadata': doc_meta,
                 })
 

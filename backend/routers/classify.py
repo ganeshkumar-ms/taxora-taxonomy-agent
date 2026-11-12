@@ -5,7 +5,7 @@ from pathlib import Path
 import json
 import uuid
 from urllib.parse import quote
-from services import bedrock_service, document_service, viewer_service
+from services import bedrock_service, document_service, file_validation, viewer_service
 from services.taxonomy_service import load_taxonomy
 from models.schemas import FeedbackRequest, FeedbackResponse
 
@@ -67,7 +67,15 @@ async def classify(
 
     if file:
         file_bytes = await file.read()
-        # Save uploaded file (unique name) so the user can open it later
+        pre_rej = file_validation.validate_file_pre_extract(file.filename, file_bytes)
+        if pre_rej:
+            return {
+                "type": "chat",
+                "message": pre_rej['message'],
+                "rejected": True,
+                "rejection_details": pre_rej,
+                "document_metadata": {'filename': file.filename, 'size_bytes': len(file_bytes)}
+            }
         stored_name = f"{uuid.uuid4().hex[:8]}_{Path(file.filename).name}"
         try:
             (UPLOADS_DIR / stored_name).write_bytes(file_bytes)
@@ -83,12 +91,13 @@ async def classify(
             doc_meta['view_url'] = f'/api/document/{q}/view'
 
         user_text = (text or '').strip()
-
-        # If file is genuinely empty (0 bytes or no content), reject immediately with clear message
-        if doc_meta.get('is_empty', False) or len(file_bytes) == 0:
+        post_rej = file_validation.validate_file_post_extract(file.filename, file_bytes, extracted.get('text', ''), meta=doc_meta)
+        if post_rej or doc_meta.get('is_empty', False) or len(file_bytes) == 0:
             return {
                 "type": "chat",
-                "message": f"The uploaded file '{file.filename}' is empty (0 bytes) and contains no content to classify. Please upload a file containing text, code, or documentation.",
+                "message": post_rej['message'] if post_rej else f"File Not Accepted: '{file.filename}' is empty.",
+                "rejected": True,
+                "rejection_details": post_rej,
                 "document_metadata": doc_meta
             }
 
