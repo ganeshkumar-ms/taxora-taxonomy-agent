@@ -14,6 +14,12 @@ _INJECTION_PATTERNS = [
     r'bypass\s+(?:all\s+)?(?:guardrails|security|safety|filters|restrictions)',
     r'you\s+are\s+now\s+in\s+(?:dan|developer|unrestricted|jailbreak)\s+mode',
     r'pretend\s+you\s+have\s+no\s+(?:guardrails|restrictions|safety\s+rules)',
+    r'act\s+as\s+(?:an?\s+)?(?:unrestricted|evil|dan|jailbroken|god)\s+mode',
+    r'do\s+anything\s+now',
+    r'override\s+(?:all\s+)?(?:safety|system|guardrail)',
+    r'forget\s+(?:all\s+)?(?:rules|instructions)',
+    r'new\s+rule\s*:\s*you\s+must',
+    r'system\s+prompt\s+override',
 ]
 
 # 2. Cyberattack, Exploit, and Direct Malicious Instructions
@@ -21,7 +27,8 @@ _UNWANTED_CONTENT_PATTERNS = [
     (r'\b(?:how\s+to\s+(?:make|build|create|synthesize)\s+(?:a\s+)?(?:bomb|explosive|weapon|ransomware|malware|keylogger|trojan))\b', 'Malicious Weapon or Malware Payload Generation'),
     (r'\b(?:write\s+(?:a\s+)?(?:ransomware|keylogger|credential\s+stealer|phishing\s+email|ddos\s+attack\s+script))\b', 'Cyberattack Exploit Scripting'),
     (r'\b(?:crack\s+(?:this\s+)?password|brute\s*force\s+(?:attack|password)|steal\s+(?:passwords|credentials|credit\s+cards))\b', 'Unauthorized Credential Cracking / Theft'),
-    (r'(?:union\s+select\s+.*from\s+information_schema|<script>\s*document\.cookie)', 'Malicious Web Injection Payload (SQLi / XSS)'),
+    (r'(?:union\s+select\s+.*from\s+information_schema|<script>\s*document\.cookie|drop\s+table\s+\w+|alert\(document\.cookie\)|<script>alert)', 'Malicious Web Injection Payload (SQLi / XSS)'),
+    (r'\b(?:meterpreter|reverse_shell|payload\.exe|mimikatz|metasploit|cve-20\d{2}-\d+)\b', 'Exploit Payload & Intrusion Tool Signature'),
 ]
 
 # 3. Direct Password / Raw Secret Submission in Chat
@@ -33,9 +40,9 @@ _DIRECT_PASSWORD_SUBMISSION_PATTERNS = [
 
 # 4. BFSI Illicit Activity & Financial Fraud Markers
 _BFSI_ILLICIT_PATTERNS = [
-    (r'\b(?:fake\s+(?:bank\s+statement|salary\s+slip|tax\s+invoice|itr|invoice\s+generator)|generate\s+fake\s+statement)\b', 'Fraudulent Document Generation / Forgery Marker'),
+    (r'\b(?:fake\s+(?:bank\s+statement|salary\s+slip|tax\s+invoice|itr|invoice\s+generator|utility\s+bill|payslip)|generate\s+fake\s+statement|photoshop\s+statement|altered\s+statement)\b', 'Fraudulent Document Generation / Forgery Marker'),
     (r'\b(?:counterfeit\s+(?:currency|banknotes|cheque)|fake\s+cheque\s+generator)\b', 'Counterfeit Banking Instrument / Forgery'),
-    (r'\b(?:hawala\s+transfer|wash\s+trading\s+account|darknet\s+crypto\s+tumbler|smurfing\s+transactions)\b', 'AML Red Flag: Illicit Money Laundering / Layering Activity'),
+    (r'\b(?:hawala\s+transfer|wash\s+trading\s+account|darknet\s+crypto\s+tumbler|smurfing\s+transactions|launder\s+money|black\s+money\s+conversion)\b', 'AML Red Flag: Illicit Money Laundering / Layering Activity'),
     (r'\b(?:stolen\s+credit\s+cards|cvv\s+dump|carding\s+forum|bin\s+attack)\b', 'Carding & Stolen Financial Data Dump'),
 ]
 
@@ -225,7 +232,28 @@ def inspect_and_sanitize(text: str, is_document: bool = False) -> Dict:
     if '[NEW FILE TO CLASSIFY:' in stripped and 'User Note:' in stripped:
         user_portion = stripped.split('User Note:', 1)[-1].split('INSTRUCTION:', 1)[0].strip()
 
-    check_target = user_portion if is_document else stripped
+    # CRITICAL: Always check BOTH full document raw content and user note against security shields!
+    check_target = raw
+
+    # Check for gibberish / corrupt non-semantic noise (e.g. keyboard smash 'asdfjkl;asdf' or 'zzzzxxxxqqqq')
+    clean_alpha = re.sub(r'[^a-zA-Z]', '', stripped)
+    if len(clean_alpha) >= 18 and re.search(r'[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{10,}', clean_alpha):
+        return {
+            'blocked': True,
+            'reason': 'Corrupted / Gibberish Input Detected',
+            'rejection_rationale': 'Submitted input lacks coherent natural language or semantic document structure.',
+            'message': '🛡️ Guardrail Notice: The submitted content appears to be keyboard noise, corrupted text, or unstructured characters. Please submit a valid document or taxonomy query.',
+            'sanitized_text': '',
+            'guardrails': {
+                'status': 'BLOCKED_GIBBERISH',
+                'action': 'REJECTED_UNREADABLE_INPUT',
+                'framework': 'Enterprise Input Sanitation Standard',
+                'triggered_rule': 'Content Integrity & Readability Filter',
+                'rejection_reason': 'Unstructured gibberish / character smash detected.',
+                'checks_passed': ['Safety Filter'],
+                'summary': 'Blocked: Corrupted text or character sequence rejected.',
+            }
+        }
 
     # 1. Prompt Injection / Jailbreak Guardrail
     for pat in _INJECTION_PATTERNS:

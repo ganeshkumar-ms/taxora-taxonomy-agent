@@ -25,7 +25,7 @@ export default function Composer({ onSend }) {
       {file && (
         <div style={{
           maxWidth: '780px', margin: '0 auto 6px',
-          display: 'flex', alignItems: 'center', gap: '8px'
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
         }}>
           <span style={{
             background: '#1a1d28', border: '1px solid rgba(140,119,255,0.25)',

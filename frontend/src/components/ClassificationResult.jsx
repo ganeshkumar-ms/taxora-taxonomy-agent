@@ -432,7 +432,31 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
             const isLast = idx === path.length - 1
             const lvlRationale = levelRationales[idx]?.rationale
             return (
-              <div key={idx} className="treeLevel">
+              <div
+                key={idx}
+                className="treeLevel steppedTreeLevel"
+                style={{
+                  marginLeft: `${idx * 28}px`,
+                  position: 'relative',
+                  paddingLeft: idx > 0 ? '6px' : '0px',
+                  marginBottom: '6px'
+                }}
+              >
+                {idx > 0 && (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: 'absolute',
+                      left: '-18px',
+                      top: '12px',
+                      width: '14px',
+                      height: '14px',
+                      borderLeft: '2px solid rgba(7, 140, 255, 0.45)',
+                      borderBottom: '2px solid rgba(7, 140, 255, 0.45)',
+                      borderBottomLeftRadius: '6px'
+                    }}
+                  />
+                )}
                 <div className="treeGutter">
                   <div
                     className="treeDot"
@@ -442,7 +466,7 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
                 </div>
                 <div className="treeNodeBody" style={{ paddingBottom: isTerminal ? '6px' : '16px' }}>
                   <span className="treeLevelTag" style={isTerminal ? { color: '#64dbff' } : {}}>
-                    {isTerminal
+                    {idx > 0 ? '↳ ' : ''}{isTerminal
                       ? `🎯 Terminal Category (Level ${idx + 1})`
                       : `Level ${idx + 1} · ${levelLabels[idx] || `Level ${idx + 1}`}`}
                   </span>
