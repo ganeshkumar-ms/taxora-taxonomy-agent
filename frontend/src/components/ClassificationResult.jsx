@@ -272,30 +272,6 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
           <span style={{ opacity: 0.75, fontSize: '10px' }}>{showGuardrailDetails ? '▲' : '▼'}</span>
         </button>
 
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '5px',
-            padding: '4px 10px',
-            borderRadius: '999px',
-            fontSize: '11.5px',
-            fontWeight: 600,
-            background: 'rgba(7, 140, 255, 0.12)',
-            color: '#38bdf8',
-            border: '1px solid rgba(7, 140, 255, 0.3)'
-          }}
-          title="Conversational & Document Memory is active for follow-up questions in this session"
-        >
-          <span>🧠</span>
-          <span>
-            Memory Active
-            {memory.remembered_documents_count > 0
-              ? ` · ${memory.remembered_documents_count + 1} docs in session`
-              : ' · Context Retained'}
-          </span>
-        </span>
-
         {traceability.trace_id && (
           <span
             style={{
@@ -491,7 +467,7 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
                 </div>
                 <div className="treeNodeBody" style={{ paddingBottom: isTerminal ? '6px' : '16px' }}>
                   <span className="treeLevelTag" style={{ color: lvlColor.tag, fontWeight: 700 }}>
-                    {idx > 0 ? '↳ ' : ''}{isTerminal
+                    {isTerminal
                       ? `🎯 Terminal Category (Level ${idx + 1})`
                       : `Level ${idx + 1} · ${levelLabels[idx] || `Level ${idx + 1}`}`}
                   </span>

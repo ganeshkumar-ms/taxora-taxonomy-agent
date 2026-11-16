@@ -59,11 +59,9 @@ function UserBubble({ msg, onOpenDocument }) {
 function AiChatBubble({ msg, onOpenDocument }) {
   const docMeta = msg.document_metadata
   const guardrails = msg.guardrails
-  const memory = msg.memory
   const isFraudBlocked = guardrails?.status === 'BLOCKED_FRAUD_ANOMALY'
   const isBlocked = Boolean(guardrails?.status && (guardrails.status === 'BLOCKED' || guardrails.status.startsWith('BLOCKED')))
   const isRedacted = !isBlocked && (guardrails?.status === 'REDACTED' || (guardrails?.redacted_count || 0) > 0)
-  const isPassed = !isBlocked && !isRedacted && (guardrails?.status === 'PASSED' || guardrails?.status === 'OK')
 
   function handleDownloadMeta() {
     const filename = docMeta?.filename || 'document'
@@ -72,7 +70,6 @@ function AiChatBubble({ msg, onOpenDocument }) {
       message: msg.content,
       document_metadata: docMeta,
       guardrails: guardrails || null,
-      memory: memory || null,
       exported_at: new Date().toISOString()
     }
     const blob = new Blob([JSON.stringify(metaObj, null, 2)], { type: 'application/json' })
@@ -97,7 +94,7 @@ function AiChatBubble({ msg, onOpenDocument }) {
         background: isBlocked ? 'rgba(127, 29, 29, 0.25)' : undefined
       }}
     >
-      {(isBlocked || isRedacted || isPassed || (memory?.conversation_turns > 0)) && (
+      {(isBlocked || isRedacted) && (
         <div style={{ marginBottom: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           {isBlocked && (
             <span
@@ -134,42 +131,6 @@ function AiChatBubble({ msg, onOpenDocument }) {
               }}
             >
               🛡️ BFSI PRIVACY SHIELD · {guardrails?.redacted_count || 1} Sensitive Identifier(s) Sanitized
-            </span>
-          )}
-          {isPassed && (
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '11.5px',
-                fontWeight: 700,
-                padding: '4px 12px',
-                borderRadius: '999px',
-                background: 'rgba(52, 211, 153, 0.16)',
-                color: '#34d399',
-                border: '1px solid rgba(52, 211, 153, 0.45)'
-              }}
-            >
-              🛡️ GUARDRAILS: PASSED · Verified Safe
-            </span>
-          )}
-          {memory?.conversation_turns > 0 && (
-            <span
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '5px',
-                fontSize: '11px',
-                fontWeight: 600,
-                padding: '3px 10px',
-                borderRadius: '999px',
-                background: 'rgba(7, 140, 255, 0.12)',
-                color: '#38bdf8',
-                border: '1px solid rgba(7, 140, 255, 0.3)'
-              }}
-            >
-              🧠 Memory Active ({memory.remembered_documents_count || 0} doc{memory.remembered_documents_count === 1 ? '' : 's'} · {memory.conversation_turns} turns)
             </span>
           )}
         </div>
