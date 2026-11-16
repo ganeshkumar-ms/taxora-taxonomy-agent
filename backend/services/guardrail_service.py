@@ -134,6 +134,10 @@ def _check_bfsi_financial_anomalies(text: str) -> Optional[Dict]:
                 'policy': 'TCS BFSI AML & Financial Crime Prevention Standard (FATF / RBI / FinCEN)',
             }
 
+    # Only perform banking ledger checks (impossible dates, IFSC routing, arithmetic reconciliation) if it is an actual financial document
+    if not is_financial_doc:
+        return None
+
     # 2. Impossible calendar dates in transaction / statement records
     impossible_dates = [
         (r'\b(?:feb(?:ruary)?|02)[/-](?:30|31)[/-](?:20\d{2}|\d{2})\b', 'Non-existent Calendar Date (February 30/31)'),
@@ -236,12 +240,13 @@ def inspect_and_sanitize(text: str, is_document: bool = False) -> Dict:
     check_target = raw
 
     # 0. Raw Credential / Access Key File Violation (PCI-DSS & GLBA)
-    # Check if input is an access key file, credentials dump, or private key file
+    # Check if input is an actual access key file, credentials dump, or private key file
     has_aws_key = bool(re.search(r'\b(?:AKIA|ASIA)[0-9A-Z]{16}\b', raw))
     has_key_header = bool(re.search(r'(?i)\b(?:access\s*key\s*id|secret\s*access\s*key|api[_\s]*secret|private[_\s]*key|password\s*=|db_pass)\b', raw))
     has_pem_key = bool(re.search(r'-----BEGIN\s+(?:RSA\s+|OPENSSH\s+|EC\s+|DSA\s+)?PRIVATE\s+KEY-----', raw, flags=re.IGNORECASE))
+    has_secret_dump = bool(re.search(r'(?i)\b(?:secret[_\s]*access[_\s]*key|aws[_\s]*secret[_\s]*access[_\s]*key)\s*[:=,]\s*["\']?[A-Za-z0-9/+=]{30,60}["\']?', raw))
 
-    if has_pem_key or (has_aws_key and has_key_header) or (has_key_header and len(stripped) < 1500 and ('secret' in raw.lower() or 'key' in raw.lower())):
+    if has_pem_key or (has_aws_key and has_key_header) or (has_aws_key and has_secret_dump):
         return {
             'blocked': True,
             'reason': 'Raw Credential / Access Key File Violation',
@@ -263,25 +268,29 @@ def inspect_and_sanitize(text: str, is_document: bool = False) -> Dict:
             },
         }
 
-    # Check for gibberish / corrupt non-semantic noise (e.g. keyboard smash 'asdfjkl;asdf' or 'zzzzxxxxqqqq')
-    clean_alpha = re.sub(r'[^a-zA-Z]', '', stripped)
-    if len(clean_alpha) >= 18 and re.search(r'[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{10,}', clean_alpha):
-        return {
-            'blocked': True,
-            'reason': 'Corrupted / Gibberish Input Detected',
-            'rejection_rationale': 'Submitted input lacks coherent natural language or semantic document structure.',
-            'message': '🛡️ Guardrail Notice: The submitted content appears to be keyboard noise, corrupted text, or unstructured characters. Please submit a valid document or taxonomy query.',
-            'sanitized_text': '',
-            'guardrails': {
-                'status': 'BLOCKED_GIBBERISH',
-                'action': 'REJECTED_UNREADABLE_INPUT',
-                'framework': 'Enterprise Input Sanitation Standard',
-                'triggered_rule': 'Content Integrity & Readability Filter',
-                'rejection_reason': 'Unstructured gibberish / character smash detected.',
-                'checks_passed': ['Safety Filter'],
-                'summary': 'Blocked: Corrupted text or character sequence rejected.',
-            }
-        }
+    # Check for gibberish / corrupt non-semantic noise ONLY on short single-line chat inputs, NEVER on uploaded documents
+    if not is_document:
+        words = stripped.split()
+        if len(words) <= 2 and len(stripped) < 100:
+            clean_alpha = re.sub(r'[^a-zA-Z]', '', stripped)
+            has_vowel = any(v in clean_alpha.lower() for v in 'aeiou')
+            if len(clean_alpha) >= 14 and not has_vowel:
+                return {
+                    'blocked': True,
+                    'reason': 'Corrupted / Gibberish Input Detected',
+                    'rejection_rationale': 'Submitted input lacks coherent natural language or semantic document structure.',
+                    'message': '🛡️ Guardrail Notice: The submitted content appears to be keyboard noise or unstructured characters. Please submit a valid document or taxonomy query.',
+                    'sanitized_text': '',
+                    'guardrails': {
+                        'status': 'BLOCKED_GIBBERISH',
+                        'action': 'REJECTED_UNREADABLE_INPUT',
+                        'framework': 'Enterprise Input Sanitation Standard',
+                        'triggered_rule': 'Content Integrity & Readability Filter',
+                        'rejection_reason': 'Unstructured keyboard smash detected.',
+                        'checks_passed': ['Safety Filter'],
+                        'summary': 'Blocked: Corrupted text or character sequence rejected.',
+                    }
+                }
 
     # 1. Prompt Injection / Jailbreak Guardrail
     for pat in _INJECTION_PATTERNS:
