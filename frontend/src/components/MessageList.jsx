@@ -61,8 +61,9 @@ function AiChatBubble({ msg, onOpenDocument }) {
   const guardrails = msg.guardrails
   const memory = msg.memory
   const isFraudBlocked = guardrails?.status === 'BLOCKED_FRAUD_ANOMALY'
-  const isBlocked = guardrails?.status === 'BLOCKED' || isFraudBlocked
-  const isRedacted = guardrails?.status === 'REDACTED' || (guardrails?.redacted_count || 0) > 0
+  const isBlocked = Boolean(guardrails?.status && (guardrails.status === 'BLOCKED' || guardrails.status.startsWith('BLOCKED')))
+  const isRedacted = !isBlocked && (guardrails?.status === 'REDACTED' || (guardrails?.redacted_count || 0) > 0)
+  const isPassed = !isBlocked && !isRedacted && (guardrails?.status === 'PASSED' || guardrails?.status === 'OK')
 
   function handleDownloadMeta() {
     const filename = docMeta?.filename || 'document'
@@ -92,11 +93,11 @@ function AiChatBubble({ msg, onOpenDocument }) {
         maxWidth: 'min(88%, 720px)',
         padding: '16px 18px',
         lineHeight: '1.6',
-        border: isBlocked ? '1px solid rgba(248, 113, 113, 0.45)' : undefined,
-        background: isBlocked ? 'rgba(127, 29, 29, 0.22)' : undefined
+        border: isBlocked ? '1px solid rgba(239, 68, 68, 0.65)' : undefined,
+        background: isBlocked ? 'rgba(127, 29, 29, 0.25)' : undefined
       }}
     >
-      {(isBlocked || isRedacted || (memory?.conversation_turns > 0)) && (
+      {(isBlocked || isRedacted || isPassed || (memory?.conversation_turns > 0)) && (
         <div style={{ marginBottom: '10px', display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
           {isBlocked && (
             <span
@@ -106,18 +107,18 @@ function AiChatBubble({ msg, onOpenDocument }) {
                 gap: '6px',
                 fontSize: '11.5px',
                 fontWeight: 700,
-                padding: '4px 10px',
+                padding: '4px 12px',
                 borderRadius: '999px',
-                background: isFraudBlocked ? 'rgba(239, 68, 68, 0.22)' : 'rgba(248, 113, 113, 0.16)',
-                color: isFraudBlocked ? '#fca5a5' : '#fca5a5',
-                border: isFraudBlocked ? '1px solid rgba(239, 68, 68, 0.6)' : '1px solid rgba(248, 113, 113, 0.4)'
+                background: 'rgba(239, 68, 68, 0.22)',
+                color: '#f87171',
+                border: '1px solid rgba(239, 68, 68, 0.65)'
               }}
             >
               {isFraudBlocked ? '🛡️ BFSI FRAUD & ANOMALY REJECTION · ' : '🛡️ GUARDRAIL BLOCK · '}
-              {guardrails?.anomaly_details?.rule || guardrails?.triggered_rule || 'Security & Privacy Policy'}
+              {guardrails?.anomaly_details?.rule || guardrails?.triggered_rule || guardrails?.rejection_reason || 'Security & Privacy Policy'}
             </span>
           )}
-          {isRedacted && !isBlocked && (
+          {isRedacted && (
             <span
               style={{
                 display: 'inline-flex',
@@ -125,14 +126,32 @@ function AiChatBubble({ msg, onOpenDocument }) {
                 gap: '6px',
                 fontSize: '11.5px',
                 fontWeight: 700,
-                padding: '4px 10px',
+                padding: '4px 12px',
                 borderRadius: '999px',
-                background: 'rgba(251, 191, 36, 0.15)',
-                color: '#fde68a',
-                border: '1px solid rgba(251, 191, 36, 0.35)'
+                background: 'rgba(251, 191, 36, 0.16)',
+                color: '#fbbf24',
+                border: '1px solid rgba(251, 191, 36, 0.5)'
               }}
             >
               🛡️ BFSI PRIVACY SHIELD · {guardrails?.redacted_count || 1} Sensitive Identifier(s) Sanitized
+            </span>
+          )}
+          {isPassed && (
+            <span
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '11.5px',
+                fontWeight: 700,
+                padding: '4px 12px',
+                borderRadius: '999px',
+                background: 'rgba(52, 211, 153, 0.16)',
+                color: '#34d399',
+                border: '1px solid rgba(52, 211, 153, 0.45)'
+              }}
+            >
+              🛡️ GUARDRAILS: PASSED · Verified Safe
             </span>
           )}
           {memory?.conversation_turns > 0 && (
@@ -143,11 +162,11 @@ function AiChatBubble({ msg, onOpenDocument }) {
                 gap: '5px',
                 fontSize: '11px',
                 fontWeight: 600,
-                padding: '3px 9px',
+                padding: '3px 10px',
                 borderRadius: '999px',
-                background: 'rgba(140, 119, 255, 0.12)',
-                color: '#c4b5fd',
-                border: '1px solid rgba(140, 119, 255, 0.28)'
+                background: 'rgba(7, 140, 255, 0.12)',
+                color: '#38bdf8',
+                border: '1px solid rgba(7, 140, 255, 0.3)'
               }}
             >
               🧠 Memory Active ({memory.remembered_documents_count || 0} doc{memory.remembered_documents_count === 1 ? '' : 's'} · {memory.conversation_turns} turns)

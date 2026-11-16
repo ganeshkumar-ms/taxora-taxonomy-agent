@@ -135,7 +135,9 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
     summary: 'Verified Safe · Unwanted content & credential guardrails passed'
   }
   const memory = data?.memory || { active: true }
-  const isRedacted = guardrails.status === 'REDACTED' || (guardrails.redacted_count || 0) > 0
+  const isBlocked = Boolean(guardrails.status && (guardrails.status === 'BLOCKED' || guardrails.status.startsWith('BLOCKED')))
+  const isRedacted = !isBlocked && (guardrails.status === 'REDACTED' || (guardrails.redacted_count || 0) > 0)
+  const isPassed = !isBlocked && !isRedacted
 
   const alternatives = (data?.alternatives || []).map(alt => ({
     ...alt,
@@ -221,10 +223,18 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
     URL.revokeObjectURL(url)
   }
 
+  const LEVEL_PALETTE = [
+    { tag: '#38bdf8', dot: '#38bdf8', bg: 'rgba(56, 189, 248, 0.08)', border: '#38bdf8', text: '#bae6fd' },
+    { tag: '#60a5fa', dot: '#60a5fa', bg: 'rgba(96, 165, 250, 0.08)', border: '#60a5fa', text: '#cbd5e1' },
+    { tag: '#818cf8', dot: '#818cf8', bg: 'rgba(129, 140, 248, 0.08)', border: '#818cf8', text: '#cbd5e1' },
+    { tag: '#a78bfa', dot: '#a78bfa', bg: 'rgba(167, 139, 250, 0.08)', border: '#a78bfa', text: '#cbd5e1' },
+    { tag: '#34d399', dot: '#34d399', bg: 'rgba(52, 211, 153, 0.1)', border: '#34d399', text: '#d1fae5' }
+  ]
+
   return (
     <div className="bubble ai classificationCard">
       {/* 0. GUARDRAILS, MEMORY & TRACEABILITY STATUS BAR */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginBottom: '12px' }}>
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginBottom: '14px' }}>
         <button
           type="button"
           onClick={() => setShowGuardrailDetails(v => !v)}
@@ -233,21 +243,31 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
             display: 'inline-flex',
             alignItems: 'center',
             gap: '6px',
-            padding: '4px 10px',
+            padding: '4px 12px',
             borderRadius: '999px',
             fontSize: '11.5px',
             fontWeight: 700,
             cursor: 'pointer',
-            background: isRedacted ? 'rgba(251, 191, 36, 0.14)' : 'rgba(52, 211, 153, 0.11)',
-            color: isRedacted ? '#fcd34d' : '#6ee7b7',
-            border: isRedacted ? '1px solid rgba(251, 191, 36, 0.35)' : '1px solid rgba(52, 211, 153, 0.28)'
+            background: isBlocked
+              ? 'rgba(239, 68, 68, 0.22)'
+              : isRedacted
+              ? 'rgba(251, 191, 36, 0.16)'
+              : 'rgba(52, 211, 153, 0.16)',
+            color: isBlocked ? '#f87171' : isRedacted ? '#fbbf24' : '#34d399',
+            border: isBlocked
+              ? '1px solid rgba(239, 68, 68, 0.6)'
+              : isRedacted
+              ? '1px solid rgba(251, 191, 36, 0.5)'
+              : '1px solid rgba(52, 211, 153, 0.45)'
           }}
         >
           <span>🛡️</span>
           <span>
-            {isRedacted
+            {isBlocked
+              ? `Guardrails: Blocked (${guardrails.triggered_rule || 'Policy Violation'})`
+              : isRedacted
               ? `Guardrails: ${guardrails.redacted_count} Secret(s) Masked`
-              : 'Guardrails: Verified Safe'}
+              : 'Guardrails: Passed · Verified Safe'}
           </span>
           <span style={{ opacity: 0.75, fontSize: '10px' }}>{showGuardrailDetails ? '▲' : '▼'}</span>
         </button>
@@ -261,9 +281,9 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
             borderRadius: '999px',
             fontSize: '11.5px',
             fontWeight: 600,
-            background: 'rgba(140, 119, 255, 0.12)',
-            color: '#c4b5fd',
-            border: '1px solid rgba(140, 119, 255, 0.28)'
+            background: 'rgba(7, 140, 255, 0.12)',
+            color: '#38bdf8',
+            border: '1px solid rgba(7, 140, 255, 0.3)'
           }}
           title="Conversational & Document Memory is active for follow-up questions in this session"
         >
@@ -286,9 +306,9 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
               borderRadius: '999px',
               fontSize: '11px',
               fontWeight: 600,
-              background: 'rgba(100, 219, 255, 0.08)',
-              color: '#93c5fd',
-              border: '1px solid rgba(100, 219, 255, 0.22)'
+              background: 'rgba(56, 189, 248, 0.1)',
+              color: '#7dd3fc',
+              border: '1px solid rgba(56, 189, 248, 0.28)'
             }}
             title="Unique Traceability Audit ID"
           >
@@ -431,6 +451,8 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
             const isTerminal = idx === path.length - 1
             const isLast = idx === path.length - 1
             const lvlRationale = levelRationales[idx]?.rationale
+            const lvlColor = isTerminal ? LEVEL_PALETTE[4] : LEVEL_PALETTE[idx % 4]
+
             return (
               <div
                 key={idx}
@@ -451,8 +473,8 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
                       top: '12px',
                       width: '14px',
                       height: '14px',
-                      borderLeft: '2px solid rgba(7, 140, 255, 0.45)',
-                      borderBottom: '2px solid rgba(7, 140, 255, 0.45)',
+                      borderLeft: `2px solid ${lvlColor.border}77`,
+                      borderBottom: `2px solid ${lvlColor.border}77`,
                       borderBottomLeftRadius: '6px'
                     }}
                   />
@@ -460,19 +482,26 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
                 <div className="treeGutter">
                   <div
                     className="treeDot"
-                    style={isTerminal ? { background: '#64dbff', boxShadow: '0 0 10px #64dbff' } : {}}
+                    style={{
+                      background: lvlColor.dot,
+                      boxShadow: isTerminal ? '0 0 12px #34d399' : `0 0 8px ${lvlColor.dot}88`
+                    }}
                   />
                   {!isLast && <div className="treeLine" />}
                 </div>
                 <div className="treeNodeBody" style={{ paddingBottom: isTerminal ? '6px' : '16px' }}>
-                  <span className="treeLevelTag" style={isTerminal ? { color: '#64dbff' } : {}}>
+                  <span className="treeLevelTag" style={{ color: lvlColor.tag, fontWeight: 700 }}>
                     {idx > 0 ? '↳ ' : ''}{isTerminal
                       ? `🎯 Terminal Category (Level ${idx + 1})`
                       : `Level ${idx + 1} · ${levelLabels[idx] || `Level ${idx + 1}`}`}
                   </span>
                   <span
                     className="treeNodeName"
-                    style={isTerminal ? { fontSize: '18px', fontWeight: 750, color: '#ffffff' } : {}}
+                    style={{
+                      fontSize: isTerminal ? '18px' : '16px',
+                      fontWeight: isTerminal ? 750 : 600,
+                      color: isTerminal ? '#34d399' : '#f0f7ff'
+                    }}
                   >
                     {levelName}
                   </span>
@@ -482,14 +511,14 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
                         marginTop: '5px',
                         fontSize: '12.5px',
                         lineHeight: '1.45',
-                        color: idx === 0 ? '#c4b5fd' : '#94a3b8',
-                        background: idx === 0 ? 'rgba(140, 119, 255, 0.08)' : 'rgba(255, 255, 255, 0.025)',
-                        borderLeft: idx === 0 ? '2.5px solid #8c77ff' : '2px solid rgba(148, 163, 184, 0.3)',
-                        padding: '5px 10px',
+                        color: lvlColor.text,
+                        background: lvlColor.bg,
+                        borderLeft: `3px solid ${lvlColor.border}`,
+                        padding: '6px 12px',
                         borderRadius: '0 7px 7px 0'
                       }}
                     >
-                      <strong style={{ color: idx === 0 ? '#ddd6fe' : '#cbd5e1' }}>
+                      <strong style={{ color: lvlColor.tag }}>
                         Why Level {idx + 1} ({levelLabels[idx] || 'Category'}):{' '}
                       </strong>
                       {lvlRationale}

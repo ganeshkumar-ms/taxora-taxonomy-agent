@@ -300,8 +300,11 @@ export default function App() {
     }
     setSessions(prev => [created, ...prev])
     setCurrentSessionId(sessionId)
-    classifyContent(file, text, [])
-      .then(result => applyResult(sessionId, result))
+    Promise.all([
+      classifyContent(file, text, []),
+      new Promise(res => setTimeout(res, 850))
+    ])
+      .then(([result]) => applyResult(sessionId, result))
       .catch(err => applyError(sessionId, err))
   }
 
@@ -337,8 +340,11 @@ export default function App() {
       return { ...s, title: nextTitle, hasTopicTitle: nextHasTopic, messages: [...s.messages, userMsg, thinkingMsg] }
     }))
 
-    classifyContent(file, text, history)
-      .then(result => applyResult(sessionId, result))
+    Promise.all([
+      classifyContent(file, text, history),
+      new Promise(res => setTimeout(res, 850))
+    ])
+      .then(([result]) => applyResult(sessionId, result))
       .catch(err => applyError(sessionId, err))
   }
 

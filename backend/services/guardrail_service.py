@@ -235,6 +235,34 @@ def inspect_and_sanitize(text: str, is_document: bool = False) -> Dict:
     # CRITICAL: Always check BOTH full document raw content and user note against security shields!
     check_target = raw
 
+    # 0. Raw Credential / Access Key File Violation (PCI-DSS & GLBA)
+    # Check if input is an access key file, credentials dump, or private key file
+    has_aws_key = bool(re.search(r'\b(?:AKIA|ASIA)[0-9A-Z]{16}\b', raw))
+    has_key_header = bool(re.search(r'(?i)\b(?:access\s*key\s*id|secret\s*access\s*key|api[_\s]*secret|private[_\s]*key|password\s*=|db_pass)\b', raw))
+    has_pem_key = bool(re.search(r'-----BEGIN\s+(?:RSA\s+|OPENSSH\s+|EC\s+|DSA\s+)?PRIVATE\s+KEY-----', raw, flags=re.IGNORECASE))
+
+    if has_pem_key or (has_aws_key and has_key_header) or (has_key_header and len(stripped) < 1500 and ('secret' in raw.lower() or 'key' in raw.lower())):
+        return {
+            'blocked': True,
+            'reason': 'Raw Credential / Access Key File Violation',
+            'rejection_rationale': 'Submitted input contains raw AWS access keys, secret access keys, or private cryptographic credentials.',
+            'message': (
+                '🛡️ BFSI Privacy & Credential Guardrail Block: You provided a raw credential file or authentication keys '
+                '(AWS Access Key ID / Secret Key / Private Key). Under Enterprise Banking Data Privacy Regulations (PCI-DSS v4.0 & GLBA Safeguards), '
+                'TAXORA strictly refuses to accept, store, or process raw access keys, passwords, or authentication secrets.'
+            ),
+            'sanitized_text': '',
+            'guardrails': {
+                'status': 'BLOCKED',
+                'action': 'BLOCKED_SENSITIVE_CREDENTIALS',
+                'framework': 'PCI-DSS v4.0 Requirement 3 & GLBA Safeguards Rule',
+                'triggered_rule': 'Zero-Password & Secret Credential Policy (AWS / API Keys)',
+                'rejection_reason': 'Raw authentication keys or credentials submitted.',
+                'checks_passed': ['Unwanted Content Filter'],
+                'summary': 'Blocked: Raw AWS access key or secret credential rejected for security governance.',
+            },
+        }
+
     # Check for gibberish / corrupt non-semantic noise (e.g. keyboard smash 'asdfjkl;asdf' or 'zzzzxxxxqqqq')
     clean_alpha = re.sub(r'[^a-zA-Z]', '', stripped)
     if len(clean_alpha) >= 18 and re.search(r'[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{10,}', clean_alpha):
