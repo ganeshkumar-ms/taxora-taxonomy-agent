@@ -233,7 +233,7 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
 
   return (
     <div className="bubble ai classificationCard">
-      {/* 0. GUARDRAILS, MEMORY & TRACEABILITY STATUS BAR */}
+      {/* 0. GUARDRAILS STATUS BAR */}
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginBottom: '14px' }}>
         <button
           type="button"
@@ -271,27 +271,6 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
           </span>
           <span style={{ opacity: 0.75, fontSize: '10px' }}>{showGuardrailDetails ? '▲' : '▼'}</span>
         </button>
-
-        {traceability.trace_id && (
-          <span
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '5px',
-              padding: '4px 10px',
-              borderRadius: '999px',
-              fontSize: '11px',
-              fontWeight: 600,
-              background: 'rgba(56, 189, 248, 0.1)',
-              color: '#7dd3fc',
-              border: '1px solid rgba(56, 189, 248, 0.28)'
-            }}
-            title="Unique Traceability Audit ID"
-          >
-            <span>🔗</span>
-            <span>Trace: {traceability.trace_id}</span>
-          </span>
-        )}
       </div>
 
       {showGuardrailDetails && (
@@ -781,6 +760,25 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
           </div>
           <span className="metaDownloadBadge">JSON ⤓</span>
         </button>
+        {traceability.trace_id && (
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
+            <span
+              style={{
+                fontSize: '11px',
+                fontFamily: 'ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace',
+                color: 'var(--muted)',
+                letterSpacing: '0.6px',
+                padding: '2px 8px',
+                borderRadius: '6px',
+                background: 'rgba(7, 140, 255, 0.06)',
+                border: '1px solid rgba(7, 140, 255, 0.16)'
+              }}
+              title="Verification Audit Code"
+            >
+              {traceability.trace_id}
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 6. FOLLOW-UP SUGGESTIONS CHIPS */}
