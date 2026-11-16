@@ -233,8 +233,17 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
 
   return (
     <div className="bubble ai classificationCard">
-      {/* 0. GUARDRAILS STATUS BAR */}
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center', marginBottom: '14px' }}>
+      {/* 0. GUARDRAILS STATUS BAR & TOP-RIGHT TRACE ID */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          marginBottom: '14px',
+          width: '100%'
+        }}
+      >
         <button
           type="button"
           onClick={() => setShowGuardrailDetails(v => !v)}
@@ -271,6 +280,27 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
           </span>
           <span style={{ opacity: 0.75, fontSize: '10px' }}>{showGuardrailDetails ? '▲' : '▼'}</span>
         </button>
+
+        {traceability?.trace_id && (
+          <span
+            style={{
+              fontSize: '11px',
+              fontFamily: 'ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace',
+              fontWeight: 600,
+              color: '#38bdf8',
+              letterSpacing: '0.6px',
+              padding: '3px 9px',
+              borderRadius: '6px',
+              background: 'rgba(7, 140, 255, 0.08)',
+              border: '1px solid rgba(7, 140, 255, 0.24)',
+              marginLeft: 'auto',
+              flexShrink: 0
+            }}
+            title="Verification Trace Code"
+          >
+            {traceability.trace_id}
+          </span>
+        )}
       </div>
 
       {showGuardrailDetails && (
@@ -760,25 +790,6 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
           </div>
           <span className="metaDownloadBadge">JSON ⤓</span>
         </button>
-        {traceability.trace_id && (
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '6px' }}>
-            <span
-              style={{
-                fontSize: '11px',
-                fontFamily: 'ui-monospace, "JetBrains Mono", Menlo, Consolas, monospace',
-                color: 'var(--muted)',
-                letterSpacing: '0.6px',
-                padding: '2px 8px',
-                borderRadius: '6px',
-                background: 'rgba(7, 140, 255, 0.06)',
-                border: '1px solid rgba(7, 140, 255, 0.16)'
-              }}
-              title="Verification Audit Code"
-            >
-              {traceability.trace_id}
-            </span>
-          </div>
-        )}
       </div>
 
       {/* 6. FOLLOW-UP SUGGESTIONS CHIPS */}
