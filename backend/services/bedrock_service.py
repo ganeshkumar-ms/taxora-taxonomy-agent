@@ -234,9 +234,15 @@ def _match_quick_conversational(user_text: str, conversation_history: list):
     greeting_patterns = {
         'hi', 'hello', 'hey', 'hola', 'hii', 'hiii', 'heyy', 'heyyy',
         'good morning', 'good afternoon', 'good evening', 'greetings',
-        'hi there', 'hello there', 'hey there', 'yo', 'namaste'
+        'hi there', 'hello there', 'hey there', 'yo', 'namaste',
+        'hi taxora', 'hello taxora', 'hey taxora', 'hi agent', 'hello agent',
+        'hey agent', 'hi bot', 'hello bot'
     }
-    if cleaned in greeting_patterns:
+    is_greeting = (
+        cleaned in greeting_patterns or
+        bool(re.match(r'^(?:hi+|hello+|hey+|hola+|namaste|vanakkam|yo+)(?:\s+(?:taxora|agent|assistant|bot|there|all|everyone|team))?[!.]*$', cleaned))
+    )
+    if is_greeting:
         return _pick_varied_response(GREETING_RESPONSES, conversation_history)
 
     return None
@@ -592,9 +598,9 @@ def classify(text: str, conversation_history: list) -> dict:
     while sanitized and sanitized[0]['role'] != 'user':
         sanitized.pop(0)
 
-    # Inject structured Session Memory block when answering follow-up questions or comparing
+    # Inject structured Session Memory block ONLY when user explicitly asks to compare or recall prior documents
     prompt_text = safe_text
-    if (not is_new_file or user_has_comparison_or_memory_ref) and memory_info['remembered_documents']:
+    if user_has_comparison_or_memory_ref and memory_info['remembered_documents']:
         mem_lines = [
             f"- Document #{i+1}: {d.get('filename', 'Document')} -> {d.get('path', 'Classified in session')}"
             for i, d in enumerate(memory_info['remembered_documents'])
