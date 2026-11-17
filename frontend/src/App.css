@@ -87,8 +87,8 @@ html{height:auto;overflow-y:auto;overflow-x:hidden}body{height:auto;overflow:vis
 .histBtn.danger{background:#ef444422;border-color:#ef444455;color:#fca5a5}
 
 
-/* Readability: bigger text, wider sidebar, higher contrast */
-.layout{grid-template-columns:300px 1fr}
+/* Standardized 280px Sidebar Layout */
+.layout{grid-template-columns:280px 1fr !important}
 @media(max-width:760px){.layout{grid-template-columns:1fr}}
 .bubble{font-size:17px;line-height:1.7;max-width:min(88%,760px)}
 .composer input,#input,input{font-size:16px}
@@ -1220,7 +1220,7 @@ header {
   left: 0;
   top: 0;
   bottom: 0;
-  width: min(80vw, 300px) !important;
+  width: min(80vw, 280px) !important;
   transform: translateX(-104%);
   transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1) !important;
   box-shadow: 20px 0 60px rgba(0, 0, 0, 0.7) !important;
@@ -1669,6 +1669,8 @@ header {
    TAXORA ZERO GREY / SAPPHIRE BLUE SYSTEM OVERRIDES
    ============================================================ */
 .side {
+  width: 280px !important;
+  padding: 20px 14px !important;
   background: #051a2c !important;
   border-right: 1px solid rgba(7, 140, 255, 0.18) !important;
 }
