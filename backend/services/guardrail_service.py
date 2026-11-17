@@ -240,21 +240,21 @@ def inspect_and_sanitize(text: str, is_document: bool = False) -> Dict:
     check_target = raw
 
     # 0. Raw Credential / Access Key File Violation (PCI-DSS & GLBA)
-    # Check if input is an actual access key file, credentials dump, or private key file
-    has_aws_key = bool(re.search(r'\b(?:AKIA|ASIA)[0-9A-Z]{16}\b', raw))
-    has_key_header = bool(re.search(r'(?i)\b(?:access\s*key\s*id|secret\s*access\s*key|api[_\s]*secret|private[_\s]*key|password\s*=|db_pass)\b', raw))
+    has_aws_key = bool(re.search(r'(?i)\b(?:AKIA|ASIA)[0-9A-Z]{16}\b', raw))
+    has_key_header = bool(re.search(r'(?i)(?:access\s*key\s*id|secret\s*access\s*key|aws[_\s]*access[_\s]*key|aws[_\s]*secret|api[_\s]*secret|private[_\s]*key|password\s*=|db_pass)', raw))
     has_pem_key = bool(re.search(r'-----BEGIN\s+(?:RSA\s+|OPENSSH\s+|EC\s+|DSA\s+)?PRIVATE\s+KEY-----', raw, flags=re.IGNORECASE))
-    has_secret_dump = bool(re.search(r'(?i)\b(?:secret[_\s]*access[_\s]*key|aws[_\s]*secret[_\s]*access[_\s]*key)\s*[:=,]\s*["\']?[A-Za-z0-9/+=]{30,60}["\']?', raw))
+    has_secret_dump = bool(re.search(r"(?i)(?:secret[_\s]*access[_\s]*key|aws[_\s]*secret[_\s]*access[_\s]*key)\s*[:=,]\s*['\"]?[A-Za-z0-9/+=]{6,64}", raw))
+    has_cred_marker = bool(re.search(r'(?i)(?:access[_\-]?keys?\.csv|credentials?\.csv|\.env|id_rsa|access_key_id)', raw))
 
-    if has_pem_key or (has_aws_key and has_key_header) or (has_aws_key and has_secret_dump):
+    if has_pem_key or has_aws_key or has_key_header or has_secret_dump or has_cred_marker:
         return {
             'blocked': True,
             'reason': 'Raw Credential / Access Key File Violation',
-            'rejection_rationale': 'Submitted input contains raw AWS access keys, secret access keys, or private cryptographic credentials.',
+            'rejection_rationale': 'Submitted input contains raw AWS access keys, secret access keys, credentials file, or private cryptographic keys.',
             'message': (
-                '🛡️ BFSI Privacy & Credential Guardrail Block: You provided a raw credential file or authentication keys '
-                '(AWS Access Key ID / Secret Key / Private Key). Under Enterprise Banking Data Privacy Regulations (PCI-DSS v4.0 & GLBA Safeguards), '
-                'TAXORA strictly refuses to accept, store, or process raw access keys, passwords, or authentication secrets.'
+                '🛡️ Enterprise Security & Credential Guardrail Block: You provided a raw credential file or authentication keys '
+                '(AWS Access Key ID / Secret Key / Private Key). Under Enterprise Data Privacy Regulations (PCI-DSS v4.0 & GLBA Safeguards), '
+                'this agent strictly refuses to accept, store, or process raw access keys, passwords, or authentication secrets.'
             ),
             'sanitized_text': '',
             'guardrails': {
@@ -268,29 +268,6 @@ def inspect_and_sanitize(text: str, is_document: bool = False) -> Dict:
             },
         }
 
-    # Check for gibberish / corrupt non-semantic noise ONLY on short single-line chat inputs, NEVER on uploaded documents
-    if not is_document:
-        words = stripped.split()
-        if len(words) <= 2 and len(stripped) < 100:
-            clean_alpha = re.sub(r'[^a-zA-Z]', '', stripped)
-            has_vowel = any(v in clean_alpha.lower() for v in 'aeiou')
-            if len(clean_alpha) >= 14 and not has_vowel:
-                return {
-                    'blocked': True,
-                    'reason': 'Corrupted / Gibberish Input Detected',
-                    'rejection_rationale': 'Submitted input lacks coherent natural language or semantic document structure.',
-                    'message': '🛡️ Guardrail Notice: The submitted content appears to be keyboard noise or unstructured characters. Please submit a valid document or taxonomy query.',
-                    'sanitized_text': '',
-                    'guardrails': {
-                        'status': 'BLOCKED_GIBBERISH',
-                        'action': 'REJECTED_UNREADABLE_INPUT',
-                        'framework': 'Enterprise Input Sanitation Standard',
-                        'triggered_rule': 'Content Integrity & Readability Filter',
-                        'rejection_reason': 'Unstructured keyboard smash detected.',
-                        'checks_passed': ['Safety Filter'],
-                        'summary': 'Blocked: Corrupted text or character sequence rejected.',
-                    }
-                }
 
     # 1. Prompt Injection / Jailbreak Guardrail
     for pat in _INJECTION_PATTERNS:

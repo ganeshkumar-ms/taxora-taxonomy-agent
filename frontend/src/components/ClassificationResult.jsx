@@ -153,7 +153,7 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
   const confidence = primary.confidence ?? 0
   const confidenceColor =
     confidence >= 85 ? '#34d399' :
-    confidence >= 65 ? '#fbbf24' :
+    confidence >= 65 ? '#34d399' :
     '#f87171'
   const confidenceBg =
     confidence >= 85 ? 'rgba(52, 211, 153, 0.12)' :
@@ -260,13 +260,13 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
             background: isBlocked
               ? 'rgba(239, 68, 68, 0.22)'
               : isRedacted
-              ? 'rgba(251, 191, 36, 0.16)'
+              ? 'rgba(52, 211, 153, 0.16)'
               : 'rgba(52, 211, 153, 0.16)',
-            color: isBlocked ? '#f87171' : isRedacted ? '#fbbf24' : '#34d399',
+            color: isBlocked ? '#f87171' : isRedacted ? '#34d399' : '#34d399',
             border: isBlocked
               ? '1px solid rgba(239, 68, 68, 0.6)'
               : isRedacted
-              ? '1px solid rgba(251, 191, 36, 0.5)'
+              ? '1px solid rgba(52, 211, 153, 0.45)'
               : '1px solid rgba(52, 211, 153, 0.45)'
           }}
         >
@@ -741,7 +741,7 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
               <div className="accordionContent">
                 {alternatives.map((alt, i) => {
                   const altConf = alt.confidence || 0
-                  const aColor = altConf >= 85 ? '#34d399' : altConf >= 65 ? '#fbbf24' : '#f87171'
+                  const aColor = altConf >= 85 ? '#34d399' : altConf >= 65 ? '#34d399' : '#f87171'
                   const aBg = altConf >= 85 ? 'rgba(52,211,153,0.12)' : altConf >= 65 ? 'rgba(251,191,36,0.12)' : 'rgba(248,113,113,0.12)'
                   return (
                     <div key={i} className="altCard">
