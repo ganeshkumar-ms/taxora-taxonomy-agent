@@ -50,6 +50,7 @@ function loadSessions() {
         }
       })
       .filter(s => s.messages.length > 0)
+      .sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0))
   } catch {
     return []
   }
@@ -232,10 +233,10 @@ export default function App() {
   }
 
   function applyResult(sessionId, result) {
-    setSessions(prev => prev.map(s => {
-      if (s.id !== sessionId) return s
+    setSessions(prev => {
+      const s = prev.find(item => item.id === sessionId)
+      if (!s) return prev
       let msgs = s.messages.filter(m => m.role !== 'thinking')
-      // If the backend returned document_metadata, link it to the user message that uploaded the file
       if (result.document_metadata) {
         for (let i = msgs.length - 1; i >= 0; i--) {
           if (msgs[i].role === 'user' && msgs[i].file) {
@@ -254,12 +255,14 @@ export default function App() {
       const aiMsg = result.type === 'chat'
         ? { role: 'ai', content: result.message || '', document_metadata: result.document_metadata, guardrails: result.guardrails, memory: result.memory, isNew: true }
         : { role: 'ai', content: result.summary || '', resultData: result, document_metadata: result.document_metadata, guardrails: result.guardrails, memory: result.memory, isNew: true }
-      return {
+      const updated = {
         ...s,
         ...autoTitle(s, result, lastUserMsg?.content || '', lastUserMsg?.file?.name || ''),
+        updatedAt: Date.now(),
         messages: [...msgs, aiMsg]
       }
-    }))
+      return [updated, ...prev.filter(item => item.id !== sessionId)]
+    })
   }
 
   function applyError(sessionId, err) {
