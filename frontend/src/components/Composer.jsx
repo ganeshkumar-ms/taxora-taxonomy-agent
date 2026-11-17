@@ -23,24 +23,20 @@ export default function Composer({ onSend }) {
   return (
     <div className="composerArea">
       {file && (
-        <div style={{
-          maxWidth: '780px', margin: '0 auto 6px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
-        }}>
-          <span style={{
-            background: '#1a1d28', border: '1px solid rgba(140,119,255,0.25)',
-            borderRadius: '8px', padding: '4px 10px',
-            fontSize: '13px', color: '#a99dff', letterSpacing: '0.3px'
-          }}>
-            📎 {file.name}
-          </span>
-          <button
-            onClick={() => { setFile(null); if (fileRef.current) fileRef.current.value = '' }}
-            style={{
-              background: 'none', border: 'none', color: '#a8aebb',
-              cursor: 'pointer', fontSize: '15px', padding: '0'
-            }}
-          >✕</button>
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%', margin: '0 auto 10px' }}>
+          <div className="attachedRow composerAttached">
+            <span className="attachChip">
+              <span className="attachName">{file.name}</span>
+              <button
+                type="button"
+                className="attachRemove"
+                aria-label={`Remove ${file.name}`}
+                onClick={() => { setFile(null); if (fileRef.current) fileRef.current.value = '' }}
+              >
+                ×
+              </button>
+            </span>
+          </div>
         </div>
       )}
       <div className="composer">
@@ -82,4 +78,3 @@ export default function Composer({ onSend }) {
     </div>
   )
 }
-

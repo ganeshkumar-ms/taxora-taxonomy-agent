@@ -633,8 +633,8 @@ export default function ClassificationResult({ data, onSuggestionClick, onOpenDo
                             fontSize: '11px',
                             padding: '2px 8px',
                             borderRadius: '6px',
-                            background: 'rgba(140, 119, 255, 0.14)',
-                            color: '#ddd6fe'
+                            background: 'rgba(7, 140, 255, 0.14)',
+                            color: '#38bdf8'
                           }}
                         >
                           📍 {sm.source_section}
