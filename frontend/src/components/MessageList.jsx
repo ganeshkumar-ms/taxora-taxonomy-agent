@@ -177,10 +177,9 @@ export default function MessageList({ messages, onFeedback, onSuggestionClick, o
 
     const lastMsg = messages[messages.length - 1]
     const currentLastRole = lastMsg?.role
-    const isNewAiReply = currentLastRole === 'ai' && (prevLastRoleRef.current === 'thinking' || lastMsg?.isNew)
 
-    if (isNewAiReply) {
-      // Scroll directly to the START of the new AI reply so the user can read from the top
+    if (currentLastRole === 'ai') {
+      // Scroll directly to the START of the latest AI reply (both new replies and loaded recent conversations)
       const timer = setTimeout(() => {
         if (!el) return
         const aiBubbles = el.querySelectorAll('.bubble.ai')
@@ -191,7 +190,7 @@ export default function MessageList({ messages, onFeedback, onSuggestionClick, o
           const targetTop = el.scrollTop + (bubbleRect.top - elRect.top) - 18
           el.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
         }
-      }, 50)
+      }, 60)
       prevLastRoleRef.current = currentLastRole
       return () => clearTimeout(timer)
     } else {
