@@ -174,6 +174,7 @@ export default function MessageList({ messages, onFeedback, onSuggestionClick, o
   useEffect(() => {
     const el = listRef.current
     if (!el) return
+    const scrollContainer = el
 
     const lastMsg = messages[messages.length - 1]
     const currentLastRole = lastMsg?.role
@@ -185,17 +186,17 @@ export default function MessageList({ messages, onFeedback, onSuggestionClick, o
         const aiBubbles = el.querySelectorAll('.bubble.ai')
         const lastAiBubble = aiBubbles[aiBubbles.length - 1]
         if (lastAiBubble) {
-          const elRect = el.getBoundingClientRect()
+          const elRect = scrollContainer.getBoundingClientRect()
           const bubbleRect = lastAiBubble.getBoundingClientRect()
-          const targetTop = el.scrollTop + (bubbleRect.top - elRect.top) - 18
-          el.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
+          const targetTop = scrollContainer.scrollTop + (bubbleRect.top - elRect.top) - 18
+          scrollContainer.scrollTo({ top: Math.max(0, targetTop), behavior: 'smooth' })
         }
       }, 60)
       prevLastRoleRef.current = currentLastRole
       return () => clearTimeout(timer)
     } else {
       // For user messages or thinking bubble, scroll to bottom so the prompt and thinking state are visible
-      el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' })
+      scrollContainer.scrollTo({ top: scrollContainer.scrollHeight, behavior: 'smooth' })
     }
 
     prevLastRoleRef.current = currentLastRole
