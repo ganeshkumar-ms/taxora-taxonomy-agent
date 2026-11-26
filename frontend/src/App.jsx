@@ -185,13 +185,6 @@ export default function App() {
   const [currentSessionId, setCurrentSessionId] = useState(null)
   const [, setTaxonomy] = useState(null)
   const [sidebarOpen, setSidebarOpen] = useState(false)
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.self !== window.top) {
-      document.documentElement.classList.add('in-iframe')
-    }
-  }, [])
-
   useEffect(() => {
     getTaxonomy()
       .then(data => setTaxonomy(data))
