@@ -30,6 +30,8 @@ export default function Sidebar({ sessions, currentSessionId, onNew, onLoad, onC
     onDelete && onDelete(id)
   }
 
+  const isAlreadyNew = !currentSessionId || !sessions.some(s => s.id === currentSessionId && (s.messages || []).length > 0)
+
   return (
     <aside className={`side${isOpen ? ' open' : ''}`}>
       <button className="drawerClose" type="button" aria-label="Close recent conversations" onClick={onClose}>
@@ -38,7 +40,7 @@ export default function Sidebar({ sessions, currentSessionId, onNew, onLoad, onC
 
       <span className="word">TAXORA</span>
 
-      <button className="new" onClick={() => { onNew(); onClose(); }} style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
+      <button className="new" disabled={isAlreadyNew} aria-disabled={isAlreadyNew} title={isAlreadyNew ? "Already in a new conversation" : "Start a new conversation"} onClick={() => { if (isAlreadyNew) return; onNew(); onClose(); }} style={{ display: 'flex', alignItems: 'center', gap: '9px' }}>
         <svg className="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
         <span>NEW CONVERSATION</span>
       </button>

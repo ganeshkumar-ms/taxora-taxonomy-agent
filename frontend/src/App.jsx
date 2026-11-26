@@ -381,14 +381,22 @@ export default function App() {
 
   // Delete, then land on a blank new conversation (not the front page).
   function deleteSession(id) {
+    const idx = sessionsRef.current.findIndex(s => s.id === id)
     const next = sessionsRef.current.filter(s => s.id !== id)
     sessionsRef.current = next
     saveSessions(next) // write to storage right away, don't wait for the next render
     setSessions(next)
     if (id === currentSessionId) {
-      setCurrentSessionId(null)
-      setPage('chat')
-      setSidebarOpen(false)
+      if (next.length > 0) {
+        const nextSess = next[idx >= 0 && idx < next.length ? idx : next.length - 1]
+        setCurrentSessionId(nextSess.id)
+        setPage('chat')
+        setSidebarOpen(false)
+      } else {
+        setCurrentSessionId(null)
+        setPage('chat')
+        setSidebarOpen(false)
+      }
     }
   }
 

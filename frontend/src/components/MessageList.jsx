@@ -204,6 +204,22 @@ export default function MessageList({ messages, onFeedback, onSuggestionClick, o
 
   return (
     <div className="messages" aria-live="polite" ref={listRef}>
+      {messages.length === 0 && (
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', color: '#849bb4', maxWidth: '520px', margin: '0 auto', padding: '24px' }}>
+          <div style={{ display: 'inline-flex', padding: '13px', borderRadius: '14px', background: 'rgba(7, 140, 255, 0.1)', border: '1px solid rgba(7, 140, 255, 0.25)', color: '#38bdf8', marginBottom: '14px' }}>
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <circle cx="12" cy="5" r="2.5" />
+              <circle cx="6" cy="18" r="2.5" />
+              <circle cx="18" cy="18" r="2.5" />
+              <path d="M12 7.5V12m0 0-6 3.5M12 12l6 3.5" />
+            </svg>
+          </div>
+          <b style={{ display: 'block', color: '#fff', fontSize: '18px' }}>Start a new taxonomy classification with TAXORA</b>
+          <p style={{ fontSize: '14.5px', lineHeight: '1.65', marginTop: '10px', marginBottom: 0 }}>
+            Upload a document from any industry or paste content below to map its 5-level enterprise taxonomy path with per-level rationales and source traceability.
+          </p>
+        </div>
+      )}
       {messages.map((msg, i) => {
         if (msg.role === 'user') {
           return <UserBubble key={i} msg={msg} onOpenDocument={onOpenDocument} />
